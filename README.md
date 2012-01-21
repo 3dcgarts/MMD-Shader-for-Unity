@@ -1,6 +1,11 @@
 MMD Shader for Unity
 ========
 
+### Preview ###
+
+<img src="http://3dcgarts.github.com/MMD-Shader-for-Unity/images/material_preview.png">
+
+
 ### 使い方 ###
 
 Unityパッケージである

@@ -11,22 +11,18 @@ MMD Shader for Unity
 Unityパッケージである
 
 ```
-    PMDMaterials.unitypackage
+PMDMaterials.unitypackage
 ```
 
 を、Unityのメニューの
 
 ```
-    Assets->Import Package->Custom Package...
+Assets->Import Package->Custom Package...
 ```
 
 からインポートしてください。
 
 シェーダは以下の４つが用意されています。
-
-Transparent とついているものは、透明な材質に使ってください。
-
-Outline     とついているものは、輪郭線を表示する材質に使ってください。
 
 ```
 MMD/PMDMaterial
@@ -35,12 +31,7 @@ MMD/Transparent/PMDMaterial
 MMD/Transparent/PMDMaterial-with-Outline
 ```
 
-また手早く使用するために、それぞれのシェーダに対応したマテリアルが用意されています。
+Transparent とついているものは、透明な材質に使ってください。
 
-```
-PMD Material
-PMD Material Transparent
-PMD Material with Outline
-PMD Material with Outline Transparent
-```
+Outline     とついているものは、輪郭線を表示する材質に使ってください。
 

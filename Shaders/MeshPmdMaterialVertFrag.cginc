@@ -16,6 +16,7 @@
  *    limitations under the License.
  */
 float4 _Color;
+float _Opacity;
 float4 _OutlineColor;
 float _OutlineWidth;
 
@@ -37,5 +38,5 @@ v2f vert( appdata_base v )
 }
 half4 frag( v2f i ) : COLOR
 {
-	return half4( _OutlineColor );
+	return half4( _OutlineColor.rgb, _Opacity );
 }

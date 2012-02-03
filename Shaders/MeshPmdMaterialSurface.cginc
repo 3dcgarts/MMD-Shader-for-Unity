@@ -16,6 +16,7 @@
  *    limitations under the License.
  */
 float4 _Color;
+float _Opacity;
 float4 _AmbColor;
 float4 _SpecularColor;
 float _Shininess;
@@ -83,5 +84,5 @@ void surf (Input IN, inout EditorSurfaceOutput o)
 	o.Albedo  = tex_color.rgb; // DiffuseTex   Default:White
 	o.Albedo += sphereAdd.rgb; // SphereAddTex Default:Black
 	o.Albedo *= sphereMul.rgb; // SphereMulTex Default:White
-	o.Alpha = _Color.a * tex_color.a;
+	o.Alpha = _Opacity * tex_color.a;
 }

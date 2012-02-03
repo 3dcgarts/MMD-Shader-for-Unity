@@ -1,20 +1,4 @@
-/*
- * MMD Shader for Unity
- *
- * Copyright 2012 Masataka SUMI, Takahiro INOUE
- *
- * ﾂ ﾂLicensed under the Apache License, Version 2.0 (the "License");
- * ﾂ ﾂyou may not use this file except in compliance with the License.
- * ﾂ ﾂYou may obtain a copy of the License at
- *
- * ﾂ ﾂ ﾂ ﾂhttp://www.apache.org/licenses/LICENSE-2.0
- *
- * ﾂ ﾂUnless required by applicable law or agreed to in writing, software
- * ﾂ ﾂdistributed under the License is distributed on an "AS IS" BASIS,
- * ﾂ ﾂWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * ﾂ ﾂSee the License for the specific language governing permissions and
- * ﾂ ﾂlimitations under the License.
- */
+
 float4 _Color;
 float  _Opacity;
 float4 _AmbColor;
@@ -68,7 +52,10 @@ inline half4 LightingMMD (EditorSurfaceOutput s, half3 lightDir, half3 viewDir, 
 	float4 toon = tex2D( _ToonTex, float2( specularStrength, lightStrength ) );
 
 	// Output
-	float4 color = saturate( _AmbColor + _Color * _LightColor0 );
+	// 変更：GRGSIBERIA
+	// _Colorが余分だったので消してみました
+	float4 color = saturate(_AmbColor + _LightColor0 );
+	//float4 color = saturate(_AmbColor + _Color *  _LightColor0 );
 	color *= float4(s.Albedo, 1.0); // DiffuseTex   Default:White
 	color += dirSpecular;           // Specular
 	color += sphereAdd;             // SphereAddTex Default:Black
@@ -80,6 +67,7 @@ inline half4 LightingMMD (EditorSurfaceOutput s, half3 lightDir, half3 viewDir, 
 
 struct Input
 {
+	//float4 color;
 	float2 uv_MainTex;
 };
 
@@ -96,6 +84,12 @@ void surf (Input IN, inout EditorSurfaceOutput o)
 	float2 uv_coord = float2( IN.uv_MainTex.x, IN.uv_MainTex.y );
 
 	float4 tex_color = tex2D( _MainTex, uv_coord );
-	o.Albedo = tex_color.rgb;
+	//o.Albedo = tex_color.rgb * IN.color.rgb;
+	//o.Alpha = _Opacity * tex_color.a * IN.color.a;
+	// 変更：GRGSIBERIA
+	// IN.color.rgbがないと暗くならないとのことなので
+	// 代わりに_AmbColorを掛け合わせてみました
+	o.Albedo = tex_color.rgb * _AmbColor;
 	o.Alpha = _Opacity * tex_color.a;
 }
+

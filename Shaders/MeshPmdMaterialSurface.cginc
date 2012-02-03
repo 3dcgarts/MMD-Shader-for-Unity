@@ -51,7 +51,7 @@ inline half4 LightingMMD (EditorSurfaceOutput s, half3 lightDir, half3 viewDir, 
 	float4 toon = tex2D( _ToonTex, float2( specularStrength, lightStrength ) );
 	// Output
 	float4 color = saturate( _AmbColor + ( _Color * lightColor ) );
-	color *= float4(s.Albedo, 1.0);
+	color *= s.Custom;
 	color += dirSpecular;
 	color *= toon;
 	color.a = s.Alpha;
@@ -66,10 +66,10 @@ struct Input
 void surf (Input IN, inout EditorSurfaceOutput o)
 {
 	// Defaults
+	o.Albedo = 0.0;
 	o.Emission = 0.0;
 	o.Gloss = 0.0;
 	o.Specular = 0.0;
-	o.Custom = 0.0;
 
 	// Diffuse Map
 	float2 uv_coord = float2( IN.uv_MainTex.x, IN.uv_MainTex.y );
@@ -81,8 +81,9 @@ void surf (Input IN, inout EditorSurfaceOutput o)
 	float4 sphereMul = tex2D( _SphereMulTex, sphereUv );
 	
 	// Output
-	o.Albedo  = tex_color.rgb; // DiffuseTex   Default:White
-	o.Albedo += sphereAdd.rgb; // SphereAddTex Default:Black
-	o.Albedo *= sphereMul.rgb; // SphereMulTex Default:White
+	o.Custom  = tex_color; // DiffuseTex   Default:White
+	o.Custom += sphereAdd; // SphereAddTex Default:Black
+	o.Custom *= sphereMul; // SphereMulTex Default:White
+	o.Custom.a = 1.0;
 	o.Alpha = _Opacity * tex_color.a;
 }

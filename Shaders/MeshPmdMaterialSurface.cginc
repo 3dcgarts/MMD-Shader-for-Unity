@@ -39,7 +39,7 @@ struct EditorSurfaceOutput
 inline half4 LightingMMD (EditorSurfaceOutput s, half3 lightDir, half3 viewDir, half atten)
 {
 	// LightColor revison
-	float4 lightColor = _LightColor0 * 0.5 * atten;
+	float4 lightColor = _LightColor0 * 1.2 * atten;
 	
 	// Specular
 	float specularStrength = s.Specular;

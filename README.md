@@ -39,7 +39,7 @@ Outline     とついているものは、輪郭線を表示する材質に使�
 
 シェーダに割り当てられているプロパティは、PMDEditor の値に準拠しています。
 
-MikuMikuDance の表示に最も近くなるのは Directional Light (Color: White) の光源を受けている時であるように設計されています。
+Directional Light (Color: White, Intensity: 0.5) の光源を受けている時に正しく表示されるように設計されています。
 
 「Lat式ミク」のような特殊なメッシュ構造を持ったモデルも正しく表示することができます。
 

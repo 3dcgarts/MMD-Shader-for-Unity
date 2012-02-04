@@ -1,6 +1,22 @@
-
+/*
+ * MMD Shader for Unity
+ *
+ * Copyright 2012 Masataka SUMI, Takahiro INOUE
+ *
+ * ï¾‚é»´Â€ ï¾‚é»´Â€Licensed under the Apache License, Version 2.0 (the "License");
+ * ï¾‚é»´Â€ ï¾‚é»´Â€you may not use this file except in compliance with the License.
+ * ï¾‚é»´Â€ ï¾‚é»´Â€You may obtain a copy of the License at
+ *
+ * ï¾‚é»´Â€ ï¾‚é»´Â€ ï¾‚é»´Â€ ï¾‚é»´Â€http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * ï¾‚é»´Â€ ï¾‚é»´Â€Unless required by applicable law or agreed to in writing, software
+ * ï¾‚é»´Â€ ï¾‚é»´Â€distributed under the License is distributed on an "AS IS" BASIS,
+ * ï¾‚é»´Â€ ï¾‚é»´Â€WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * ï¾‚é»´Â€ ï¾‚é»´Â€See the License for the specific language governing permissions and
+ * ï¾‚é»´Â€ ï¾‚é»´Â€limitations under the License.
+ */
 float4 _Color;
-float  _Opacity;
+float _Opacity;
 float4 _AmbColor;
 float4 _SpecularColor;
 float _Shininess;
@@ -22,74 +38,54 @@ struct EditorSurfaceOutput
 
 inline half4 LightingMMD (EditorSurfaceOutput s, half3 lightDir, half3 viewDir, half atten)
 {
-	half3 h = normalize (lightDir + viewDir);
-
-	half diff = max (0, dot ( lightDir, s.Normal ));
-
-	float nh = max (0, dot (s.Normal, h));
-	float spec = pow (nh, s.Specular*128.0);
-
-	half4 res;
-	res.rgb = _LightColor0.rgb * diff;
-	res.w = spec * Luminance (_LightColor0.rgb);
-	res *= atten * 2.0;
-	half4 light = res;
-
+	// å¤‰æ›´ï¼šGRGSIBERIA
+	// DirectionalLightã®å…‰é‡ãŒ0.5ã®çŠ¶æ…‹ã§ã¾ã è‹¥å¹²æš—ã‹ã£ãŸã®ã§èª¿æ•´
+	//float4 lightColor = _LightColor0 * 0.5 * atten;
+	float4 lightColor = _LightColor0 * 0.6 * atten;
+	
 	// Specular
 	float specularStrength = s.Specular;
 	float dirDotNormalHalf = max(0, dot(s.Normal, normalize(lightDir + viewDir)));
 	float dirSpecularWeight = pow( dirDotNormalHalf, _Shininess );
-	float4 dirSpecular = _SpecularColor * _LightColor0 * dirSpecularWeight;
-	// Light
-	float lightStrength = (1.0 + dot(lightDir, s.Normal)) / 2.0;
-	float lightColor = _LightColor0 * lightStrength;
-	// Sphere
-	float2 viewNormal = mul( UNITY_MATRIX_MV, float4(s.Normal, 0.0) ).xy;
-	float2 sphereUv = viewNormal * 0.5 + 0.5;
-	float4 sphereAdd = tex2D( _SphereAddTex, sphereUv );
-	float4 sphereMul = tex2D( _SphereMulTex, sphereUv );
+	float4 dirSpecular = _SpecularColor * lightColor * dirSpecularWeight;
 	// ToonMap
+	float lightStrength = dot(lightDir, s.Normal) * 0.5 + 0.5;
 	float4 toon = tex2D( _ToonTex, float2( specularStrength, lightStrength ) );
-
 	// Output
-	// •ÏXFGRGSIBERIA
-	// _Color‚ª—]•ª‚¾‚Á‚½‚Ì‚ÅÁ‚µ‚Ä‚İ‚Ü‚µ‚½
-	float4 color = saturate(_AmbColor + _LightColor0 );
-	//float4 color = saturate(_AmbColor + _Color *  _LightColor0 );
-	color *= float4(s.Albedo, 1.0); // DiffuseTex   Default:White
-	color += dirSpecular;           // Specular
-	color += sphereAdd;             // SphereAddTex Default:Black
-	color *= sphereMul;             // SphereMulTex Default:White
-	color *= toon;                  // ToonTex      Default:White
+	float4 color = saturate( _AmbColor + ( _Color * lightColor ) );
+	color *= s.Custom;
+	color += dirSpecular;
+	color *= toon;
 	color.a = s.Alpha;
 	return color;
 }
 
 struct Input
 {
-	//float4 color;
 	float2 uv_MainTex;
 };
 
 void surf (Input IN, inout EditorSurfaceOutput o)
 {
 	// Defaults
-	//o.Normal = float3(0.0,0.0,1.0);
+	o.Albedo = 0.0;
 	o.Emission = 0.0;
 	o.Gloss = 0.0;
 	o.Specular = 0.0;
-	o.Custom = 0.0;
 
-	// UV coord Transform
+	// Diffuse Map
 	float2 uv_coord = float2( IN.uv_MainTex.x, IN.uv_MainTex.y );
-
 	float4 tex_color = tex2D( _MainTex, uv_coord );
-	//o.Albedo = tex_color.rgb * IN.color.rgb;
-	//o.Alpha = _Opacity * tex_color.a * IN.color.a;
-	// •ÏXFGRGSIBERIA
-	// IN.color.rgb‚ª‚È‚¢‚ÆˆÃ‚­‚È‚ç‚È‚¢‚Æ‚Ì‚±‚Æ‚È‚Ì‚Å
-	// ‘ã‚í‚è‚É_AmbColor‚ğŠ|‚¯‡‚í‚¹‚Ä‚İ‚Ü‚µ‚½
-	o.Albedo = tex_color.rgb * _AmbColor;
+	// Sphere Map
+	float3 viewNormal = normalize( mul( UNITY_MATRIX_MV, float4(normalize(o.Normal), 0.0) ).xyz );
+	float2 sphereUv = viewNormal.xy * 0.5 + 0.5;
+	float4 sphereAdd = tex2D( _SphereAddTex, sphereUv );
+	float4 sphereMul = tex2D( _SphereMulTex, sphereUv );
+	
+	// Output
+	o.Custom  = tex_color; // DiffuseTex   Default:White
+	o.Custom += sphereAdd; // SphereAddTex Default:Black
+	o.Custom *= sphereMul; // SphereMulTex Default:White
+	o.Custom.a = 1.0;
 	o.Alpha = _Opacity * tex_color.a;
 }
-

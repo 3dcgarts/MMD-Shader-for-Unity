@@ -5,6 +5,11 @@ MMD Shader for Unity
 
 <img src="http://3dcgarts.github.com/MMD-Shader-for-Unity/images/material_preview.png">
 
+Presented by [3DCGArts](http://www.3dcg-arts.net/)
+
+### Download ###
+
+[Version 1.2](https://github.com/3dcgarts/MMD-Shader-for-Unity/zipball/v1.2)
 
 ### 使い方 ###
 

@@ -32,8 +32,9 @@ Shader "MMD/PMDMaterial-with-Outline"
 	}
 
 	SubShader
-	{	
+	{
 		// Surface Shader
+		Cull Off
 		CGPROGRAM
 		#pragma surface surf MMD
 		#include "MeshPmdMaterialSurface.cginc"

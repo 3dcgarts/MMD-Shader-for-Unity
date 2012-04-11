@@ -30,7 +30,7 @@ v2f vert( appdata_base v )
 {
 	v2f o;
 	float4 pos = mul( UNITY_MATRIX_MVP, v.vertex );
-	float width = 0.001 * _OutlineWidth;
+	float width = 0.01 * _OutlineWidth;
 	float4 edge_pos = v.vertex + pos.w * width * float4( v.normal, 0.0 );
 	o.pos = mul( UNITY_MATRIX_MVP, edge_pos );
 

@@ -41,11 +41,22 @@ Shader "MMD/Transparent/PMDMaterial"
 		
 		// Surface Shader
 		Cull Back
+		ZWrite On
 		Blend SrcAlpha OneMinusSrcAlpha
 		CGPROGRAM
 		#pragma surface surf MMD
 		#include "MeshPmdMaterialSurface.cginc"
 		ENDCG
+
+		// Surface Shader
+		Cull Front
+		ZWrite Off
+		Blend SrcAlpha OneMinusSrcAlpha
+		CGPROGRAM
+		#pragma surface surf MMD
+		#include "MeshPmdMaterialSurface.cginc"
+		ENDCG
+
 	}
 
 	// Other Environment

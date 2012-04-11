@@ -63,6 +63,16 @@ Shader "MMD/Transparent/PMDMaterial-with-Outline"
 			#include "MeshPmdMaterialVertFrag.cginc"
 			ENDCG
 		}
+		
+		// Surface Shader Pass ( Back )
+		Cull Front
+		ZWrite Off
+		Blend SrcAlpha OneMinusSrcAlpha
+		CGPROGRAM
+		#pragma surface surf MMD
+		#include "MeshPmdMaterialSurface.cginc"
+		ENDCG
+	
 	}
 
 	// Other Environment

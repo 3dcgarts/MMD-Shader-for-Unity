@@ -34,7 +34,7 @@ Shader "MMD/PMDMaterial"
 		// First Pass
 		Pass
 		{
-			Cull Back
+			Cull Off
 		}
 
 		// Surface Shader

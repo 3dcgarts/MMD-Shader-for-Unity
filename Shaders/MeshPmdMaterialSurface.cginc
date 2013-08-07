@@ -61,6 +61,7 @@ inline half4 LightingMMD (EditorSurfaceOutput s, half3 lightDir, half3 viewDir, 
 struct Input
 {
 	float2 uv_MainTex;
+	float3 worldNormal;
 };
 
 void surf (Input IN, inout EditorSurfaceOutput o)
@@ -75,7 +76,7 @@ void surf (Input IN, inout EditorSurfaceOutput o)
 	float2 uv_coord = float2( IN.uv_MainTex.x, IN.uv_MainTex.y );
 	float4 tex_color = tex2D( _MainTex, uv_coord );
 	// Sphere Map
-	float3 viewNormal = normalize( mul( UNITY_MATRIX_MV, float4(normalize(o.Normal), 0.0) ).xyz );
+	float3 viewNormal = normalize( mul( UNITY_MATRIX_V, float4(IN.worldNormal, 0.0) ).xyz );
 	float2 sphereUv = viewNormal.xy * 0.5 + 0.5;
 	float4 sphereAdd = tex2D( _SphereAddTex, sphereUv );
 	float4 sphereMul = tex2D( _SphereMulTex, sphereUv );
